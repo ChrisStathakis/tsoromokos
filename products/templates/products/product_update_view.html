@@ -1,0 +1,209 @@
+{% extends "dashboard.html" %}
+
+{% block extra_css %}
+    <style>
+        #id_categories {
+            height: 300px;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="content">
+        <div class='row'>
+            <div class='col-md-12'>
+                <div class='card'>
+                    <div class='card-header'>
+                        <h4>{{ object }}</h4>
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th> Sku: {{ object.sku }}</th>
+                                    <th>ΤΕΛΕΥΤΑΙΑ ΤΙΜΗ ΑΓΟΡΑΣ: {{ object.tag_price_buy }}</th>
+                                    <th> ΑΠΟΘΕΜΑ: {{ object.qty }} {{ object.get_unit_display }}</th>
+                                </tr>
+                                <tr>
+                                    <th>ΜΕΣΗ ΤΙΜΗ: {{ object.average_price }}</th>
+                                    
+                                    <th>ΤΡΕΧΩΝ ΜΕΣΗ  ΤΙΜΗ: {{ object.running_average_price }}</th>
+                                    
+                                </tr>
+                            </tbody>
+                        </table>
+                       
+                        
+                        <a style="display: inline" href="{% url 'edit_product_list' %}" class="btn btn-warning pull-right">Επιστροφη</a>
+                    </div>
+                    <div class='card-body'>
+                        Κατηγορίες... {% for category in object.categories.all %} {{ category }} {% empty %} Δε έχετε επιλέξει κατηγορίες. {% endfor %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class='row'>
+            <div class='col-md-4'>
+                <div class='card'>
+                    <div class='card-header'>
+                        <h4>Επεξεργασια</h4>
+                        <a href='{% url "edit_product_delete" object.id %}' onclick="return confirm('Εισαι σιγουρος;')" class='btn btn-danger'>Διαγραφη</a>
+                    </div>
+                    <div class='card-body'>
+                        <form method='post' class='form'>
+                            {% csrf_token %} {{form}}
+                            <button type='sumbit' class='btn btn-success' > <i class='fa fa-save'> </i> Αποθηκευση </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class='col-md-7'>
+                <div class="card">
+                    <div class="card-header">
+                        
+                        <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                            Filters
+                        </a>
+                        <a href="{{ request.path }}" class="btn btn-danger">Καθαρισμος</a>
+                        
+                    </div>
+                    <div class="card-body">
+                        <div class="collapse" id="collapseExample">
+                            <form method="get" class="form">
+                                 <div class="row">
+                                      {% include 'filters/my_filters.html' %}
+                                 </div>
+                                 <button type="submit" class="btn btn-"><i class="fa fa-save"></i> Αποθηκευση </button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            
+                <div class='card' style="height:500px;overflow-y: scroll;">
+                    <div class='card-header'>
+                        <h4>ΑΓΟΡΕΣ</h4>
+                    </div>
+
+                    <div class='card-body'>
+                        <table class='table'>
+                            <thead>
+                                <tr>
+                                    <th>Ημερομηνία</th>
+                                    <th>Κωδικός Τιμ</th>
+                                    <th>Προμηθευτης</th>
+                                    <th>Αξία</th>
+                                    <th>ΠΟΣΟΤΗΤΑ</th>
+                                    <th>ΥΠΟΛΟΙΠΟ</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ele in vendor_invoices %}
+                                    <tr>
+                                        <td>{{ ele.date }}</td>
+                                        <td>{{ ele.order_code|default_if_none:"-" }}</td>
+                                        <td>{{ ele.vendor }}</td>
+                                        <td>{{ ele.value }}</td>
+                                        <td>{{ ele.qty }} </td>
+                                        <td>{{ ele.remaining_qty }} </td>    
+                                    </tr>
+                                {% endfor %}
+                                    <tr>
+                                        <td colspan='7'> </td>
+                                    </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class='card'style="height:500px;overflow-y: scroll;">
+                    <div class='card-header'>
+                        <h4>ΠΩΛΗΣΕΙΣ</h4>
+                    </div>
+
+                    <div class='card-body'>
+                        <table class='table'>
+                            <thead>
+                                <tr>
+                                    <th>Ημερομηνία</th>
+                                    <th>Τιμολόγιο</th>
+                                    <th>ΠΕΛΑΤΗΣ</th>
+                                    <th>Αξία</th>
+                                    <th>ΠΟΣΟΤΗΤΑ</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ele in sell_invoices %}
+                                    <tr>
+                                        <td>{{ ele.date }}</td>
+                                        <td>{{ ele.invoice }}</td>
+                                        <td>{{ ele.invoice.profile }}</td>
+                                        <td>{{ ele.sell_price }}</td>
+                                        <td>{{ ele.qty }} </td>
+                                        
+                                    </tr>
+                                {% endfor %}
+                                    <tr>
+                                        <td colspan='7'> </td>
+                                    </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+     
+        </div>
+    </div>
+    <div class="row" id="modal_area"></div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="edit_form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Προσθηκη Προμηθευτη</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method='post' class='form'>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+       </div>
+    </div>
+                          
+
+{% endblock content %}
+
+    {% block extra_js %}
+        <script>
+            $('.edit_button').click(function (evt) {
+                evt.preventDefault();
+                console.log('here');
+                $('#modal_area').empty();
+                const my_btn = $(this);
+                const url = my_btn.attr('data-href');
+                $.ajax({
+                    method: 'GET',
+                    dataType: 'json',
+                    url: url,
+                    success: function (data) {
+                        $('#modal_area').html(data.result);
+                        $('#quick_view_modal').modal('show');
+                    }
+                })
+            })
+        </script>
+
+        {{ product_vendor_form.media }}
+
+{% endblock %}
