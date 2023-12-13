@@ -13,6 +13,7 @@ from decimal import Decimal
 from operator import attrgetter
 from itertools import chain
 
+from costumers.models import PaymentInvoice
 from incomes.models import Income
 from products.models import Product, ProductVendor
 from payroll.models import Bill, Payroll
@@ -77,6 +78,13 @@ class AnalysisIncomeView(ListView):
             total=Sum('pos')).values('month', 'total').order_by('month')
         analysis_cash_per_month = self.object_list.annotate(month=TruncMonth('date_expired')).values('month').annotate(
             total=Sum('cash')).values('month', 'total').order_by('month')
+        invoice_incomes = PaymentInvoice.filter_data(self.request, PaymentInvoice.objects.all())
+        total_payment_invoices = invoice_incomes.aggregate(Sum('final_value'))['final_value__sum'] if invoice_incomes else 0
+        total_income_taxes_24 = invoice_incomes.aggregate(Sum('charges_taxes'))['charges_taxes__sum'] if invoice_incomes else 0
+        analysis_payment_invoice_per_month = invoice_incomes.annotate(month=TruncMonth("date")).values('month').annotate(
+            total=Sum('final_value'), taxes=Sum("charges_taxes")
+        ).order_by('month') if invoice_incomes else 0
+        total += total_payment_invoices
         context.update(locals())
         return context
 

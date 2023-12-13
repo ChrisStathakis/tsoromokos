@@ -3,15 +3,16 @@
     <head>
         <meta charset="utf-8">
         <title>{{ instance.costumer }} | {{ instance.get_series_display }} | {{ instance.number }}</title>
-        <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-        <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link href="{% static 'costumers/bootstrap.css' %}" rel="stylesheet" id="bootstrap-css">
+        <script src="{% static 'costumers/bootstrap.min.js' %}"></script>
+        <script src="{% static 'costumers/jquery.min.js' %}"></script>
 <!------ Include the above in your HEAD tag ---------->
         <style>
-            .my_p{
-                padding-right: 3rem !important;
-                padding-left: 3rem !important;
+            body{
+              -webkit-print-color-adjust:exact !important;
+              print-color-adjust:exact !important;
             }
+            
             .bottom {
                 position: absolute;
                 bottom: 10px;
@@ -22,19 +23,19 @@
         </style>
     </head>
     <body>
-        <div class="container" style="height: 29.7cm;">
+        <div class="container" style="height: 29.7cm">
             <div class="row">
                 <div class="col-12">
-                    <div class="card">
-                        <div class="card-body p-0">
+                    <div class="card" style="border: none">
+                        <div class=" p-0">
                             <div class="row pb-5 p-5">
                             <div class="col-6">
                                 <table class="table table-bordered">
                                     <tbody>
                                         <tr>
                                             <td>
-                                                ΤΟΠΟΣ ΕΚΔΟΣΗΣ <br />
-                                                {{ instance.tag_place }}
+                                               <span> ΤΟΠΟΣ ΕΚΔΟΣΗΣ </span><br />
+                                                {{ instance.tag_place|defaulr_if_none: }}
                                             </td>
                                             <td>
                                                 ΗΜΕΡΟΜΗΝΙΑ <br />
@@ -43,7 +44,7 @@
                                         </tr>
                                         <tr>
                                            <tr>
-                                                <td colspan="2" style="font-weight: bold;text-align: center">
+                                                <td colspan="2" style="font-weight: bold;text-align: center;">
                                                     ΔΕΛΤΙΟ ΑΠΟΣΤΟΛΗΣ <br />
                                                     (ΜΗ ΤΙΜΟΛΟΓΗΘΕΝΤΩΝ ΑΠΟΘΕΜΑΤΩΝ)
                                                 </td>
@@ -68,8 +69,8 @@
                                 <table class="table table-bordered">
                                     <tbody>
                                         <tr>
-                                            <td>ΣΕΙΡΑ: {{ instance.get_series_display|default_if_none:"" }}</td>
-                                            <td>Νο: {{ instance.number|default_if_none:"" }}</td>
+                                            <td style="background-color: #adb3b9 !important">ΣΕΙΡΑ: {{ instance.get_series_display|default_if_none:"" }}</td>
+                                            <td style="background-color: #adb3b9 !important">Νο: {{ instance.number|default_if_none:"" }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -88,7 +89,7 @@
                                     <table class="table table-bordered table-sm">
                                         <tbody>
                                             <tr>
-                                                <td colspan="2"><span style="font-weight: bold">ΕΠΩΝΥΜΙΑ: </span> : {{ costumer.eponimia|default_if_none:"" }}</td>
+                                                <td colspan="2" style="background-color: #adb3b9 !important"><span style="font-weight: bold">ΕΠΩΝΥΜΙΑ: </span> : {{ costumer.eponimia|default_if_none:"" }}</td>
                                             </tr>
                                             <tr>
                                                 <td><span style="font-weight: bold">ΔΙΕΥΘΥΝΣΗ: </span> {{ costumer.address|default_if_none:"" }}</td>
@@ -112,12 +113,12 @@
                                 </div>
 
                                 <div class="col-12">
-                                    <table style="width: 100%" class="table table-bordered">
+                                    <table style="width: 100%;margin-top:3%" class="table table-bordered">
                                         <thead>
-                                            <tr>
-                                                <th style="width: 10%" colspan="1" style="wi">ΠΟΣΟΤΗΤΑ</th>
-                                                <th style="width: 10%" colspan="1" class="">ΜΜ</th>
-                                                <th style="width: 80%" colspan="6" class="">ΠΕΡΙΓΡΑΦΗ</th>
+                                            <tr style="background-color: #adb3b9 !important">
+                                                <th style="width: 10%;background-color: #adb3b9 !important" colspan="1">ΠΟΣΟΤΗΤΑ</th>
+                                                <th style="width: 10%;background-color: #adb3b9 !important" colspan="1" class="">ΜΜ</th>
+                                                <th style="width: 80%;background-color: #adb3b9 !important" colspan="6" class="">ΠΕΡΙΓΡΑΦΗ</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -147,10 +148,8 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>
-                                    ΠΟΣΟΤΗΤΑ ΑΡΙΘΜΗΤΙΚΩΣ
-                                    <br />
-
+                                <th style="background-color: #adb3b9 !important">
+                                    ΠΟΣΟΤΗΤΑ ΑΡΙΘΜΗΤΙΚΩΣ<br />
                                 </th>
                             </tr>
                         </thead>
@@ -173,9 +172,9 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>ΕΚΔΟΣΗ</th>
-                                <th>ΠΑΡΑΔΟΣΗ</th>
-                                <th>ΠΑΡΑΛΑΒΗ</th>
+                                <th style="background-color: #adb3b9 !important">ΕΚΔΟΣΗ</th>
+                                <th style="background-color: #adb3b9 !important">ΠΑΡΑΔΟΣΗ</th>
+                                <th style="background-color: #adb3b9 !important">ΠΑΡΑΛΑΒΗ</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -190,12 +189,12 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>ΑΡΙΘΜΟΣ ΣΧΕΤΙΚΟΥ ΠΑΡΑΣΤΑΤΙΚΟΥ</th>
+                                <th style="background-color: #adb3b9 !important">ΑΡΙΘΜΟΣ ΣΧΕΤΙΚΟΥ ΠΑΡΑΣΤΑΤΙΚΟΥ</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{{ instance.number_of_invoice }}</td>
+                                <td>{{ instance.number_of_invoice|default_if_none:"-" }}</td>
                             </tr>
                         </tbody>
                     </table>

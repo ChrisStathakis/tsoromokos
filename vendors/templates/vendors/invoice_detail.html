@@ -4,70 +4,7 @@
 {% block content %}
     <div class="content">
         <div class="row">
-            <div class="col-5">
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Επιλογη Προϊοντος</h4>
-                        <form method="get" class="form">
-                            <input name="q" type="text" class="form-control search_button" data-href="{% url 'vendors:search_products_ware' object.id %}">
-                        </form>
-                    </div>
-                    <div class="card-body" id="product_container">
-                       {% include 'warehouse/ajax/ware_product_container.html' %}
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Δημιουργια Προϊοντος</h4>
-                    </div>
-                    <div class="card-body">
-                        <form method="post" class="form" action="{% url 'vendors:create_product_from_invoice' object.id %}">
-                            {% csrf_token %}
-                            {{ product_form }}
-                            <button type="submit" class="btn btn-success"> <i class="fa fa-save"></i> Αποθηκευση </button>
-                        </form>
-                    </div>
-                    <div class="modal_area"></div>
-                </div>
-            </div>
-            <div class='col-7'>
-                <div class='card'>
-                    <div class='card-header'>
-                        <h4>Λεπτομεριες Τιμολογιου </h4>
-                    </div>
-                    <div class='card-body'>
-                        <table class='table table-bordered'>
-                            <thead>
-                                <tr>
-                                    <th>Κωδ. Τιμο</th>
-                                    <th>Προϊον</th>
-                                    <th>Ποσοτητα</th>
-                                    <th>Αξία</th>
-                                    <th>Τελικη Αξια</th>
-                                    <th>Κατηγορια Φπα</th>
-
-                                    <th>--</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for item in order_items %}
-                                    <tr>
-                                        <td {% if item.locked %} class="table-warning" {% endif %}>{{ item.order_code }}</td>
-                                        <td>{{ item.product }}</td>
-                                        <td>{{ item.qty }} {{ item.get_unit_display}}</td>
-                                        <td>{{ item.value }}</td>
-                                        <td>{{ item.total_clean_value }}</td>
-                                        <td>{{ item.get_taxes_modifier_display }} </td>
-                                        <td><button data-href="{% url 'vendors:ajax_modify_order_item' item.id %}" type='button' class='btn btn-warning edit_button'><i class='fa fa-edit'></i> </button></td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-
-                    </div>
-                </div>
-
+            <div class='col-12'>
                 <div class="card">
                     <div class="card-header">
                         <h4>Συνολικα Στοιχεια</h4>
@@ -82,6 +19,7 @@
                                     </li>
                                     <li class="list-group-item">Κωδικος Τιμ.. {{ invoice.title }}</li>
                                     <li class="list-group-item">Αξια Προϊόντων... {{ invoice.value }}</li>
+                                    <li class="list-group-item">ΜΕΤΑΦΟΡΙΚΑ: {{ invoice.extra_value }}</li>
                                     <li class="list-group-item">Αξια Προϊόντων + ΦΠΑ  {{ invoice.final_value }}</li>
                                     <li class="list-group-item">Τροπος Πληρωμής... {{ invoice.payment_method }}</li>
                                 </ul>
@@ -130,7 +68,75 @@
                         </div>
                     </div>
                 </div>
+                <div class='card'>
+                    <div class='card-header'>
+                        <h4>Λεπτομεριες Τιμολογιου </h4>
+                        <a class="btn btn-success" href="{% url 'vendors:calculate_extra_cost' invoice.id %}">ΥΠΟΛΟΓΙΣΜΟΣ ΜΕΤΑΦΟΡΙΚΩΝ</a>
+                    </div>
+                    <div class='card-body'>
+                        <table class='table table-bordered'>
+                            <thead>
+                                <tr>
+                                    <th>Κωδ. Τιμο</th>
+                                    <th>Προϊον</th>
+                                    <th>Ποσοτητα</th>
+                                    <th>Αξία Μοναδας</th>
+                                    <th>Τελικη Αξία Μοναδας</th>
+                                    <th>Τελικη Αξια</th>
+                                    <th>Κατηγορια Φπα</th>
+
+                                    <th>--</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order_items %}
+                                    <tr>
+                                        <td {% if item.locked %} class="table-warning" {% endif %}>{{ item.order_code }}</td>
+                                        <td>{{ item.product }}</td>
+                                        <td>{{ item.qty }} {{ item.get_unit_display}}</td>
+                                        <td>{{ item.value }}</td>
+                                        <td>ΚΟΣ. ΜΕΤ. {{ item.extra_value }} | ΤΕΛΙΚΗ ΑΞΙΑ: {{ item.final_value_unit }}</td>
+                                        <td>{{ item.total_clean_value }}</td>
+                                        <td>{{ item.get_taxes_modifier_display }} </td>
+                                        <td><button data-href="{% url 'vendors:ajax_modify_order_item' item.id %}" type='button' class='btn btn-warning edit_button'><i class='fa fa-edit'></i> </button></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
             </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Επιλογη Προϊοντος</h4>
+                        <form method="get" class="form">
+                            <input name="q" type="text" class="form-control search_button" data-href="{% url 'vendors:search_products_ware' object.id %}">
+                        </form>
+                    </div>
+                    <div class="card-body" id="product_container">
+                       {% include 'warehouse/ajax/ware_product_container.html' %}
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Δημιουργια Προϊοντος</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" class="form" action="{% url 'vendors:create_product_from_invoice' object.id %}">
+                            {% csrf_token %}
+                            {{ product_form }}
+                            <button type="submit" class="btn btn-success"> <i class="fa fa-save"></i> Αποθηκευση </button>
+                        </form>
+                    </div>
+                    <div class="modal_area"></div>
+                </div>
+            </div>
+
         </div>
     </div>
 {% endblock %}

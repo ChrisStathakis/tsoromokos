@@ -63,6 +63,7 @@ class ProductTable(tables.Table):
     tag_price_buy = tables.Column(orderable=False, verbose_name='Τιμή Αγοράς')
     tag_average_price = tables.Column(orderable=False, verbose_name='Μεση Τιμή Αγοράς')
     qty = tables.TemplateColumn("<p style='background-color:{{ record.tag_color_qty}}'>{{ record.qty }} </p>", orderable=False)
+
     class Meta:
         model = Product
         template_name = 'django_tables2/bootstrap.html'

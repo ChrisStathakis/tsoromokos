@@ -14,7 +14,7 @@ from .action_views import (validate_invoice_form_view, validate_employer_view, v
                            validate_product_creation_view, validate_product_edit_view, validate_product_vendor_edit_view,
                            copy_product_to_new_vendor, copy_product_from_vendor_card_view, action_favorite_view,
                            action_form_copy_vendor_product_view, validate_paycheck_form_view, validate_create_invoice_order_item_view,
-                           create_product_from_invoice
+                           create_product_from_invoice, calculate_extra_cost_view
 
                            
                )
@@ -114,7 +114,7 @@ urlpatterns = [
 
 
     # actions
-
+    path("calculate-extra-cost/<int:pk>/", calculate_extra_cost_view, name="calculate_extra_cost"),
     path("ajax/manipulate-product-category/<int:pk>/<int:dk>/<str:action>/", ajax_add_product_to_category_view,
          name="ajax_manipulate_product_category"),
     path("ajax/edit-product-submit/<int:pk>/<int:dk>/", ajax_edit_product_submit_view, name="edit_product_submit"),

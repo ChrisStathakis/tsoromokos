@@ -219,7 +219,7 @@ class PaymentInvoice(models.Model):
                                          default=1
                                          )
 
-    value = models.DecimalField(decimal_places=2, max_digits=17, default=0.00, verbose_name='Αξια Προ Εκπτωσεως')
+    charges_cost = models.DecimalField(decimal_places=2, max_digits=17, default=0.00, verbose_name='Αξια Προ Εκπτωσεως')
     discount_value = models.DecimalField(decimal_places=2, max_digits=17, default=0.00, verbose_name='Εκπτωση')
     clean_value = models.DecimalField(decimal_places=2, max_digits=17, default=0.00, verbose_name='Καθαρη Αξια')
     taxes_value = models.DecimalField(decimal_places=2, max_digits=17, default=0.00, verbose_name='Συνολο ΦΠΑ')
@@ -315,9 +315,16 @@ class PaymentInvoice(models.Model):
     def tag_new_balance(self):
         return str(self.new_balance).replace('.', ',')
 
-
-    def filter_data(self, request):
-        qs = ''
+    @staticmethod
+    def filter_data(request, qs):
+        search_name = request.GET.get('search_name', None)
+        date_start, date_end, date_range = initial_date(request, 6)
+        q = request.GET.get('q', None)
+        if search_name:
+            qs = qs.filter(number__icontains=search_name)
+        if date_start and date_end:
+            qs = qs.filter(date__range=[date_start, date_end])
+        return qs
 
 
 class CostumerDetails(models.Model):

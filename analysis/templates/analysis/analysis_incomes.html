@@ -58,7 +58,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for ele in analysis_per_month %}
+                                {% for ele in analysis_payment_invoice_per_month %}
                                    <tr>
                                         <td>{{ ele.month.month }}/{{ ele.month.year }}</td>
                                         <td>{{ ele.total }}</td>
@@ -241,6 +241,13 @@ var myChart = new Chart(ctx, {
 				borderColor: 'yellow',
 				fill: false,
 				data:[{% for ele in analysis_cash_per_month %} {% if forloop.last %} {{ ele.total }}{% else %} {{ele.total}}, {% endif %} {% endfor %}],
+			},
+			{
+				label: 'Τιμολόγια',
+				backgroundColor: 'black',
+				borderColor: 'black',
+				fill: false,
+				data:[{% for ele in analysis_payment_invoice_per_month %} {% if forloop.last %} {{ ele.total }}{% else %} {{ele.total}}, {% endif %} {% endfor %}],
 			}
             ]
 

@@ -353,7 +353,6 @@ class PaycheckUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-
 @staff_member_required
 def paycheck_delete_view(request, pk):
     instance = get_object_or_404(Paycheck, id=pk)

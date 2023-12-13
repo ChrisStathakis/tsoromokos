@@ -353,3 +353,11 @@ def create_product_from_invoice(request, pk):
     else:
         messages.warning(request, form.errors)
     return redirect(instance.get_edit_url())
+
+
+
+def calculate_extra_cost_view(request, pk):
+    instance = get_object_or_404(Invoice, id=pk)
+    for ele in instance.order_items.all():
+        ele.save()
+    return HttpResponseRedirect(instance.get_edit_url())

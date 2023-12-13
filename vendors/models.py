@@ -182,16 +182,19 @@ class InvoiceItem(models.Model):
 
     unit = models.CharField(max_length=1, choices=UNITS, default='a', verbose_name='ΜΜ')
     qty = models.DecimalField(max_digits=17, decimal_places=2, default=1, verbose_name='Ποσότητα')
-    value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Τιμή')
+    value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Τιμή Μοναδας')
 
     discount = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Εκπτωση')
     discount_value = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Ποσο Εκπτωσης')
 
     clean_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Αξια')
     total_clean_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Καθαρη Αξια')
+
     taxes_modifier = models.CharField(max_length=1, choices=TAXES_CHOICES, default='c')
     taxes_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Αξια ΦΠΑ')
+    extra_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Αξια Μεταφορικων')
     total_value = models.DecimalField(max_digits=17, decimal_places=2, verbose_name='Τελικη Αξία')
+    final_value_unit = models.DecimalField(max_digits=17, decimal_places=2, default=0, verbose_name='Τελικη Αξία')
 
     # this fields is exlusive to calculate price buy
     used_qty = models.DecimalField(max_digits=17, decimal_places=2, default=0)
@@ -203,27 +206,37 @@ class InvoiceItem(models.Model):
 
     def __str__(self):
         return self.product.title
-    
 
     def save(self, *args, **kwargs):
+        self.date = self.invoice.date
         self.clean_value = Decimal(self.value) * ((100 - Decimal(self.discount)) / 100)
         self.discount_value = (Decimal(self.value) * Decimal(self.discount / 100)) * (self.qty)
         self.total_clean_value = self.clean_value * self.qty
-
         self.taxes_value = Decimal(self.total_clean_value) * Decimal(self.get_taxes_modifier_display() / 100)
         self.total_value = Decimal(self.total_clean_value) + Decimal(self.taxes_value)
         self.remaining_qty = self.qty - self.used_qty
-        self.remaining_total_cost = self.remaining_qty * self.value
-        self.date = self.invoice.date
+
+
+        self.extra_value = self.calculate_extra_value()
+        self.final_value_unit = (self.clean_value * (1+Decimal(self.get_taxes_modifier_display() / 100))) + self.extra_value
+        self.remaining_total_cost = self.remaining_qty * self.final_value_unit
         super().save(*args, **kwargs)
         self.invoice.save()
-        self.product.price_buy = self.value
+        print('unit', self.final_value_unit)
+        self.product.price_buy = self.final_value_unit
         self.product.save()
 
     def get_delete_url(self):
         return reverse('vendors:delete_invoice_item', kwargs={'pk': self.id})
 
-
+    def calculate_extra_value(self):
+        invoice_cost = self.invoice.final_value - self.invoice.extra_value
+        total_cost = (self.clean_value * (1+Decimal(self.get_taxes_modifier_display() / 100))) * self.qty
+        if self.qty != 0 and invoice_cost !=0:
+            item_cost = Decimal(self.invoice.extra_value) * (Decimal(total_cost)/Decimal(invoice_cost))
+            return item_cost / self.qty
+        else:
+            return 0
 
     def tag_value(self):
         str_value = str(self.value).replace('.', ',')

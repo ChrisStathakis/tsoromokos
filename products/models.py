@@ -79,7 +79,6 @@ class Product(models.Model):
     taxes_modifier = models.CharField(max_length=1, choices=TAXES_CHOICES, null=True, blank=True)
     price_list = models.ManyToManyField(PriceList, verbose_name="prices_list", blank=True)
 
-
     def __str__(self):
         return self.title
 
@@ -87,14 +86,13 @@ class Product(models.Model):
         verbose_name = 'Προϊόν'
          # verbose_plural_name = 'Προϊόντα'
 
-    
     def save(self, *args, **kwargs):
         self.title = self.title.upper()
         self.barcode = self.create_barcode()
         self.final_value = self.value
 
         invoice_qs = self.invoice_vendor_items.all()
-        self.running_average_price = invoice_qs[:3].aggregate(avg=Avg("value"))['avg'] or 0
+        self.running_average_price = invoice_qs[:3].aggregate(avg=Avg("final_value_unit"))['avg'] or 0
         sell_qs = self.sell_items.all()
         add_qty = invoice_qs.aggregate(total_qty=Sum("qty"))['total_qty'] if invoice_qs.exists() else 0
         sell_qty = sell_qs.aggregate(total_qty=Sum("qty"))["total_qty"] if sell_qs.exists() else 0
@@ -102,10 +100,6 @@ class Product(models.Model):
         self.qty = add_qty - sell_qty
         self.margin = 0
         self.average_price = self.estimate_average_price(invoice_qs)
-        if invoice_qs:
-            self.price_buy = invoice_qs.first().value
-        else:
-            self.price_buy = 0
         super(Product, self).save(*args, **kwargs)
 
     def estimate_average_price(self, invoice_qs):
