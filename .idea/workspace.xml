@@ -7,31 +7,7 @@
     <bookmark url="file://$PROJECT_DIR$/vendors/views.py" description="template_name = 'vendors/vendor_card.html'" line="185" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1480b706-c3a3-4352-8915-cfbc3558cf25" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/costumers/static/costumers/bootstrap.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/costumers/static/costumers/bootstrap.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/costumers/static/costumers/jquery.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/costumers/templates/costumers/print/example1/bootstrap.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/costumers/templates/costumers/print/example1/bootstrap.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/costumers/templates/costumers/print/example1/jquery.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analysis/templates/analysis/analysis_incomes.html" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/templates/analysis/analysis_incomes.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analysis/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/analysis/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/costumers/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/costumers/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/costumers/templates/costumers/print/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/costumers/templates/costumers/print/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/templates/costumer_homepage.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/templates/costumer_homepage.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/products/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/products/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/products/tables.py" beforeDir="false" afterPath="$PROJECT_DIR$/products/tables.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/products/templates/products/product_update_view.html" beforeDir="false" afterPath="$PROJECT_DIR$/products/templates/products/product_update_view.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shop_quick_view/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/shop_quick_view/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendors/action_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/vendors/action_views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendors/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/vendors/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendors/templates/vendors/invoice_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/vendors/templates/vendors/invoice_detail.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendors/templates/warehouse/ajax/product_container.html" beforeDir="false" afterPath="$PROJECT_DIR$/vendors/templates/warehouse/ajax/product_container.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendors/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/vendors/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendors/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/vendors/views.py" afterDir="false" />
-    </list>
+    <list default="true" id="1480b706-c3a3-4352-8915-cfbc3558cf25" name="Default" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
