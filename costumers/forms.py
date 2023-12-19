@@ -22,7 +22,7 @@ class CostumerForm(BaseForm, forms.ModelForm):
 
 
 class PaymentInvoiceForm(BaseForm, forms.ModelForm):
-    date = forms.DateTimeField(required=True, widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}),label='Ημερομηνια')
+    date = forms.DateTimeField(required=True, widget=forms.DateTimeInput(attrs={'type': 'date'}),label='Ημερομηνια')
 
     class Meta:
         model = PaymentInvoice
