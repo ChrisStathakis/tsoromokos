@@ -77,7 +77,6 @@ class ProductTableForCategory(tables.Table):
         orderable=False, verbose_name='Αναλυση'
     )
     tag_price_buy = tables.Column(verbose_name='Χαμηλοτερη τιμη', orderable=False)
-    tag_vendors = tables.Column(verbose_name='VENDORS', orderable=False)
     tag_final_value = tables.Column(verbose_name='Αξια', orderable=False)
     title = tables.TemplateColumn("<a target='_blank' style='text-decoration: none;color:black' href='{{ record.get_edit_url }}'>"
                                   "{{ record }} </a>")
@@ -87,7 +86,7 @@ class ProductTableForCategory(tables.Table):
     class Meta:
         model = Product
         template_name = 'django_tables2/bootstrap.html'
-        fields = ['delete', 'title', 'tag_price_buy', 'tag_final_value', "margin", "tag_vendors", 'quick_view', ]
+        fields = ['delete', 'title', 'tag_price_buy', 'tag_final_value', "margin",  'quick_view', ]
 
 
 class ProductCategoriesTable(tables.Table):

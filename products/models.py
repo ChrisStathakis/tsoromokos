@@ -1,6 +1,7 @@
 from django.contrib.postgres.search import TrigramSimilarity
 from django.contrib.postgres.search import SearchQuery, SearchVector
 from django.db import models
+from django.db.models import Sum
 from django.shortcuts import reverse
 from django.conf import settings
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
@@ -14,22 +15,7 @@ PRODUCTION = settings.PRODUCTION
 CURRENCY = settings.CURRENCY
 
 
-class PriceList(models.Model):
-    active = models.BooleanField(default=False)
-    title = models.CharField(max_length=220)
 
-    def __str__(self):
-        return self.title
-
-    def get_absolute_url(self):
-        return reverse('price_list_update', kwargs={'pk': self.id})
-
-    def get_delete_url(self):
-        return reverse("price_list_delete", kwargs={"pk": self.id})
-
-    @staticmethod
-    def get_create_url():
-        return reverse("price_list_create")
 
 
 class Category(models.Model):
@@ -68,6 +54,7 @@ class Product(models.Model):
     categories = models.ManyToManyField(Category, verbose_name='Κατηγορίες', blank=True)
     qty = models.DecimalField(default=0, verbose_name='Ποσότητα', decimal_places=2, max_digits=20)
     safe_qty = models.IntegerField(default=0, null=True, verbose_name="Ελάχιστη ποσότητα")
+    need_refresh = models.BooleanField(default=False)
     price_buy = models.DecimalField(max_digits=20, decimal_places=2, verbose_name='Τελευταία Τιμή Αγοράς', default=0.00)
     value = models.DecimalField(max_digits=20, decimal_places=2, verbose_name='Τιμή Πώλησης', )
 
@@ -77,7 +64,7 @@ class Product(models.Model):
     final_value = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
     margin = models.DecimalField(default=0, decimal_places=2, max_digits=10)
     taxes_modifier = models.CharField(max_length=1, choices=TAXES_CHOICES, null=True, blank=True)
-    price_list = models.ManyToManyField(PriceList, verbose_name="prices_list", blank=True)
+    
 
     def __str__(self):
         return self.title
@@ -90,7 +77,11 @@ class Product(models.Model):
         self.title = self.title.upper()
         self.barcode = self.create_barcode()
         self.final_value = self.value
-
+        if self.safe_qty > 0:
+            self.need_refresh = True if self.qty <= self.safe_qty else False
+        else:
+            self.need_refresh = False
+        print (self.need_refresh)
         invoice_qs = self.invoice_vendor_items.all()
         self.running_average_price = invoice_qs[:3].aggregate(avg=Avg("final_value_unit"))['avg'] or 0
         sell_qs = self.sell_items.all()
@@ -98,7 +89,7 @@ class Product(models.Model):
         sell_qty = sell_qs.aggregate(total_qty=Sum("qty"))["total_qty"] if sell_qs.exists() else 0
 
         self.qty = add_qty - sell_qty
-        self.margin = 0
+        self.margin = abs(1 - (self.value/self.price_buy)) if self.price_buy > 0 else 0
         self.average_price = self.estimate_average_price(invoice_qs)
         super(Product, self).save(*args, **kwargs)
 
@@ -271,3 +262,39 @@ class ProductVendor(models.Model):
                         ).distinct()
         return qs
 
+
+
+class PriceList(models.Model):
+    active = models.BooleanField(default=False)
+    title = models.CharField(max_length=220)
+    value = models.DecimalField(max_digits=10, decimal_places=2, default=0, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        self.value = self.price_items.all().aggregate(Sum('total_value'))['total_value__sum'] or 0
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse('price_list_update', kwargs={'pk': self.id})
+
+    def get_delete_url(self):
+        return reverse("price_list_delete", kwargs={"pk": self.id})
+
+    @staticmethod
+    def get_create_url():
+        return reverse("price_list_create")
+    
+
+class PriceListItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    price_list = models.ForeignKey(PriceList, on_delete=models.PROTECT, related_name="price_items")
+    value = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="ΤΙΜΗ ΜΟΝΑΔΑΣ")
+    qty = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="ΠΟΣΟΤΗΤΑ")
+    total_value = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def save(self, *args, **kwargs):
+        self.total_value = self.qty * self.value
+        super().save(*args, **kwargs)
+        self.price_list.save()

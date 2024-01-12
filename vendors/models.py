@@ -9,7 +9,7 @@ from django.dispatch import receiver
 from tinymce.models import HTMLField
 from decimal import Decimal
 
-from frontend.models import PaymentMethod
+from frontend.models import PaymentMethod, Settings
 from frontend.tools import initial_date
 from frontend.my_constants import TAXES_CHOICES, UNITS
 
@@ -125,7 +125,7 @@ class Invoice(models.Model):
     payment_method = models.ForeignKey(PaymentMethod, on_delete=models.PROTECT, null=True, verbose_name='Τροπος Πληρωμης', blank=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name='invoices', verbose_name='Προμηθευτης')
     value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Καθαρή Αξια')
-    extra_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Επιπλέον Αξία')
+    extra_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='ΜΕΤΑΦΟΡΙΚΑ')
     final_value = models.DecimalField(decimal_places=2, max_digits=20, verbose_name='Αξία', default=0.00)
     description = models.TextField(blank=True, verbose_name='Λεπτομεριες')
 
@@ -165,11 +165,15 @@ class Invoice(models.Model):
     def filters_data(request, qs):
         date_start, date_end, date_range = initial_date(request, 6)
         search_name = request.GET.get('search_name', None)
+        q = request.GET.get('q', None)
+
         qs = qs.filter(title__icontains=search_name) if search_name else qs
+        qs = qs.filter(description__icontains=search_name) if search_name else qs
+        qs = qs.filter(title__icontains=q) if q else qs
+        qs = qs.filter(description__icontains=q) if q else qs
+
         if date_start and date_end:
-
             qs = qs.filter(date__range=[date_start, date_end])
-
         return qs
 
 
@@ -201,6 +205,9 @@ class InvoiceItem(models.Model):
     remaining_qty = models.DecimalField(max_digits=17, decimal_places=2, default=0)
     remaining_total_cost = models.DecimalField(max_digits=17, decimal_places=2, default=0)
 
+    # calcylate sell price
+    income_percent = models.DecimalField(blank=True, null=True, max_digits=5, decimal_places=2, verbose_name="ΠΟΣΟΣΤΟ ΚΕΡΔΟΥΣ")
+
     class Meta:
         ordering = ['-date', 'id']
 
@@ -215,15 +222,18 @@ class InvoiceItem(models.Model):
         self.taxes_value = Decimal(self.total_clean_value) * Decimal(self.get_taxes_modifier_display() / 100)
         self.total_value = Decimal(self.total_clean_value) + Decimal(self.taxes_value)
         self.remaining_qty = self.qty - self.used_qty
-
-
         self.extra_value = self.calculate_extra_value()
         self.final_value_unit = (self.clean_value * (1+Decimal(self.get_taxes_modifier_display() / 100))) + self.extra_value
         self.remaining_total_cost = self.remaining_qty * self.final_value_unit
         super().save(*args, **kwargs)
         self.invoice.save()
-        print('unit', self.final_value_unit)
+        
         self.product.price_buy = self.final_value_unit
+
+        self.product.save()
+
+    def calculate_product_sell_price(self):
+        self.product.value = Decimal(self.final_value_unit) * Decimal((100 + Decimal(self.income_percent))/100) or 0
         self.product.save()
 
     def get_delete_url(self):

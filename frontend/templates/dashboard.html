@@ -100,7 +100,7 @@
                       <div class="card-footer ">
                         <hr>
                         <a href="{% url 'incomes:list' %}" class="stats">
-                          <i class="fa fa-refresh"></i> Εσοδα
+                          <i class="fa fa-refresh"></i> ΠΡΟΪΟΝΤΑ
                         </a>
                       </div>
                     </div>
@@ -116,7 +116,7 @@
                           </div>
                           <div class="col-7 col-md-8">
                             <div class="numbers">
-                              <p class="card-category">Υπολοιπο Λογαριασμών</p>
+                              <p class="card-category">ΥΠΟΛΟΙΠΟ</p>
                               <p class="card-title">{{ bills_pending_cost|floatformat:2 }} {{ currency }}
                                 <p>
                             </div>
@@ -142,17 +142,16 @@
                           </div>
                           <div class="col-7 col-md-8">
                             <div class="numbers">
-                              <p class="card-category">Υπόλοιπο Επιταγων</p>
-                              <p class="card-title">{{ paycheck_money|floatformat:2 }} {{ currency }}
-                                <p>
+                              <p class="card-category">ADMIN</p>
+                              
                             </div>
                           </div>
                         </div>
                       </div>
                       <div class="card-footer ">
                         <hr>
-                        <a href="{% url 'payroll_bills:payroll_list' %}" class="stats">
-                          <i class="fa fa-clock-o"></i> 
+                        <a href="/admin/" class="stats">
+                          Go to
                         </a>
                       </div>
                     </div>
@@ -184,45 +183,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="row">
-                    
-                    <div class="col-md-12">
-                    <div class="card ">
-                      <div class="card-header ">
-                        <h5 class="card-title">ΕΠΙΤΑΓΕΣ</h5>
-                        <p class="card-category">ΕΠΟΜΕΝΕΣ 20 ΜΕΡΕΣ</p>
-                      </div>
-                      <div class="card-body ">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Ημερομηνια</th>
-                                    <th>Τιτλος</th>
-                                    <th>Προμηθευτης</th>
-                                    <th>Ποσό</th>
-                                    <th>-</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for paycheck in paychecks %}
-                                    <tr>
-                                        <td>{{ paycheck.date|date:"d-M-Y" }}</td>
-                                        <td>{{ paycheck }}</td>
-                                        <td>{{ paycheck.vendor }}</td>
-                                        <td>{{ paycheck.value }}</td>
-                                        <td><a href="{{ paycheck.get_edit_url }}" class='btn btn-success'> 
-                                            <i class='fa fa-edit'> </i>
-                                        </a> </td>
-                                      
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                      </div>
 
-                    </div>
-                  </div>
-                </div>
                 <div class="row">
                   <div class="col-md-6">
                     <div class="card ">
@@ -294,26 +255,25 @@
                   <div class="col-md-6">
                     <div class="card">
                       <div class="card-header">
-                        <h5 class="card-title">Εσοδα</h5>
-                        <p class="card-category">Τελευταιες 10 Καταχωρησεις</p>
+                        <h5 class="card-title">ΠΡΟΪΟΝΤΑ</h5>
+                        
                       </div>
                       <div class="card-body">
                           <table class="table table-bordered">
                               <thead>
                                 <tr>
-                                    <th>Ημερομηνία</th>
-                                    <th>Ζ Ημερας</th>
-                                    <th>Pos</th>
-                                    <th>Μετρητα</th>
+                                    <th>ΠΡΟΪΟΝ</th>
+                                    <th>ΑΣΦΑΛΗ ΠΟΣΟΤΗΤΑ</th>
+                                    <th>ΥΠΟΛΟΙΠΟ</th>
+                                    
                                 </tr>
                               </thead>
                               <tbody>
-                                {% for income in last_incomes %}
+                                {% for ele in products %}
                                     <tr>
-                                        <td>{{ income.date_expired }}</td>
-                                        <td>{{ income.sum_z }}</td>
-                                        <td>{{ income.pos }}</td>
-                                        <td>{{ income.cash }}</td>
+                                        <td>{{ ele }}</td>
+                                        <td>{{ ele.safe_qty }}</td>
+                                        <td>{{ ele.qty }}</td>
                                     </tr>
                                 {% endfor %}
                               </tbody>

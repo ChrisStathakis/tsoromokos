@@ -21,7 +21,7 @@ from incomes.models import Income
 from payroll.models import Bill, Payroll
 from vendors.models import Vendor, Invoice, Paycheck
 from vendors.models import Payment as VendorPayment
-
+from products.models import Product
 CURRENCY = settings.CURRENCY
 
 
@@ -35,7 +35,7 @@ class HomepageView(TemplateView):
         date_start, date_end = datetime.today().replace(day=1), datetime.today()
         incomes = Income.objects.filter(date_expired__range=[date_start, date_end])
         monthly_incomes = incomes.aggregate(Sum('logistic_value'))['logistic_value__sum'] if incomes.exists() else 0
-
+        products = Product.objects.filter(active=True, need_refresh=True)
         # bills
         bills_pending = Bill.objects.filter(is_paid=False)
         bills_pending_cost = bills_pending.aggregate(Sum('final_value'))['final_value__sum'] if bills_pending.exists() else 0

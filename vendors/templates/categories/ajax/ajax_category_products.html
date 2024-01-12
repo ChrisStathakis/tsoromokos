@@ -7,7 +7,6 @@
                 <th>ΧΑΜ. ΤΙΜΗ</th>
                 <th>ΤΙΜΗ ΠΩΛΗΣΗΣ</th>
                 <th>ΚΕΡΔΟΣ</th>
-                <th>ΠΡΟΜ.</th>
                 <th>ΛΕΠΤΟΜ.</th>
                 <th>ΔΙΑΓΡΑΦΗ</th>
 
@@ -20,7 +19,7 @@
                     <td>{{ ele.tag_price_buy}}</td>
                     <td>{{ ele.tag_final_value}}</td>
                     <td>{{ ele.margin}} </td>
-                    <td>{{ ele.tag_vendors}} </td>
+                
                     <td><a data-href="{% url 'vendors:ajax_product_analysis' ele.id %}" class='btn btn-primary btn-round quick-view'><i class='fa fa-eye'></i></a> </td>
                     <td><button data-href="{% url 'vendors:ajax_manipulate_product_category' category.id ele.id 'delete' %}" class='btn btn-danger delete_class'><i class='fa fa-trash'></i></button></td>
                 </tr>

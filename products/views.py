@@ -8,8 +8,8 @@ from django.urls import reverse_lazy, reverse
 from django.db.models import F, Sum, FloatField
 from django_tables2.tables import RequestConfig
 
-from .models import Product, Category, ProductVendor, TAXES_CHOICES, PriceList
-from .forms import ProductFrontEndForm, ProductVendorFrontEndform, PriceListForm
+from .models import Product, Category, ProductVendor, TAXES_CHOICES, PriceList, PriceListItem
+from .forms import ProductFrontEndForm, ProductVendorFrontEndform, PriceListForm, PriceListItemForm
 from vendors.models import Vendor, InvoiceItem
 from costumers.models import InvoiceItem as SellInvoiceItem
 from .tables import CategoryTable, ProductTable, PriceTable
@@ -255,22 +255,34 @@ class PriceListUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["page_title"] = f'{self.object}'
-        context['products'] = Product.objects.all()[:100]
-        context['qs'] = Product.objects.filter(price_list=self.object)
+        context['products'] = Product.filters_data(self.request, Product.objects.filter(active=True))
+        context['qs'] = self.object.price_items.all()
         context["create_product"] = ProductFrontEndForm()
         return context
 
 
 @staff_member_required
+def update_price_list_item_view(request, pk):
+    instance = get_object_or_404(PriceListItem, id=pk)
+    form = PriceListItemForm(request.POST or None, instance=instance)
+    if form.is_valid():
+        form.save()
+        return HttpResponseRedirect(instance.price_list.get_absolute_url())
+    back_url = instance.price_list.get_absolute_url()
+    form_title = instance.product
+    return render(request, 'form_view.html', context=locals())
+
+@staff_member_required
 def delete_price_list_view(request, pk):
     instance = get_object_or_404(PriceList, id=pk)
+    for ele in instance.price_items.all():
+        ele.delete()
     instance.delete()
     messages.success(request, f'The price list {instance.title} διαγραφηκε')
-    return redirect(reverse('price_list_detail'))
+    return redirect(reverse('price_list_view'))
 
 
 @staff_member_required
 def print_price_list_view(request, pk):
     instance = get_object_or_404(PriceList, id=pk)
-    products = Product.objects.filter(price_list=instance)
-    return render(request, "costumers/print/price_list_print_view.html", context={"instance": instance, "qs": products})
+    return render(request, "costumers/print/price_list_print_view.html", context={"instance": instance, "qs": PriceListItem.objects.filter(price_list=instance)})

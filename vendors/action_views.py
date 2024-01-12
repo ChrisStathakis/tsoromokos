@@ -293,11 +293,15 @@ def action_form_copy_vendor_product_view(request, pk):
 @staff_member_required
 def validate_create_invoice_order_item_view(request, pk):
     instance = get_object_or_404(Invoice, id=pk)
+    
+    
     form = InvoiceItemForm(request.POST or None, initial={'invoice': instance,
                                                           'vendor': instance.vendor,
+                                                        
                                                           })
     if form.is_valid():
         data = form.save()
+        data.calculate_product_sell_price()
         product = data.product
         product.price_buy = data.value
         product.order_sku = data.order_code
@@ -345,9 +349,9 @@ def create_product_from_invoice(request, pk):
                     value=product.price_buy,
                     discount=0,
                     taxes_modifier=product.taxes_modifier,
-                    
+                    income_percent=form.cleaned_data.get('income_percent', 20)
                 )
-
+        new_item.calculate_product_sell_price()
         
         return redirect(instance.get_edit_url())
     else:

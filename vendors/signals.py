@@ -1,4 +1,4 @@
-from django.db.models.signals import post_delete, pre_delete
+from django.db.models.signals import post_delete, pre_delete, post_save
 from django.dispatch import receiver
 
 from .models import Payment, Invoice,  InvoiceItem
@@ -24,3 +24,5 @@ def update_vendor_invoice_on_delete(sender, instance, **kwargs):
 def update_anything_on_order_item_delete(sender, instance, **kwargs):
     instance.invoice.save()
     instance.product.save()
+
+

@@ -1,7 +1,7 @@
 from dal import autocomplete
 
 from django import forms
-from .models import Vendor, ProductVendor, Product, Category, PriceList
+from .models import Vendor, ProductVendor, Product, Category, PriceList, PriceListItem
 from orders.forms import BaseForm
 
 
@@ -44,20 +44,34 @@ class ProductFrontEndForm(BaseForm, forms.ModelForm):
         fields = ['active', 'title', "unit",'sku', 'categories',
                   'value', 'safe_qty', 'taxes_modifier'
                 ]
-        
 
-class ProductFrontEndAjaxForm(BaseForm, forms.ModelForm):
+
+class PriceListItemForm(BaseForm, forms.ModelForm):
 
     class Meta:
-        model = Product
-        fields = ['active', 'title', 'value',]
+        model = PriceListItem
+        fields = ['product', 'price_list', 'value', 'qty']
         
     def __init__(self, *args, **kwargs):
-        super(ProductFrontEndAjaxForm, self).__init__(*args, **kwargs)
-        self.fields['title'].label = "New Email Label"
-        self.fields['value'].label = "New Email Label"
-        self.fields['value_per_unit'].label = "ΤΙΜΗ ΑΝΑ ΜΟΝΑΔΑ ΜΕΤΡΗΣΗΣ"
-        self.fields['value_discount'].label = "ΕΚΠΤΩΤΙΚΗ ΤΙΜΗ"
+        super().__init__(*args, **kwargs)
+        # self.fields['title'].label = "New Email Label"
+        # self.fields['value'].label = "New Email Label"
+        # self.fields['value_per_unit'].label = "ΤΙΜΗ ΑΝΑ ΜΟΝΑΔΑ ΜΕΤΡΗΣΗΣ"
+        # self.fields['value_discount'].label = "ΕΚΠΤΩΤΙΚΗ ΤΙΜΗ"
+
+
+class ProductListItemForm(BaseForm, forms.ModelForm):
+
+    class Meta:
+        model = PriceListItem
+        fields = ['product', 'price_list', 'value', 'qty']
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # self.fields['title'].label = "New Email Label"
+        # self.fields['value'].label = "New Email Label"
+        # self.fields['value_per_unit'].label = "ΤΙΜΗ ΑΝΑ ΜΟΝΑΔΑ ΜΕΤΡΗΣΗΣ"
+        # self.fields['value_discount'].label = "ΕΚΠΤΩΤΙΚΗ ΤΙΜΗ"
         
 
 class ProductVendorFrontEndform(BaseForm, forms.ModelForm):

@@ -9,6 +9,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h4>{{ object }}</h4>
+                        
                         <a href="{% url 'price_list_print' object.id %}" class="btn btn-success" target="_blank"><i class="fa fa-print"></i></a>
 
                     </div>
@@ -29,6 +30,7 @@
                 <div class="card">
                     <div class="card-header">
                         <a href="{% url 'price_list_view' %}" class="btn btn-warning">ΕΠΙΣΤΡΟΦΗ</a>
+                        <a href="{% url 'price_list_delete' object.id %}" class="btn btn-danger pull-right"> ΔΙΑΓΡΑΦΗ </a>
                         <h4>ΠΡΟΪΟΝΤΑ</h4>
 
                         <!-- Button trigger modal -->

@@ -11,6 +11,7 @@ from .models import Invoice, Payment, Vendor, Employer, VendorBankingAccount, No
 from products.models import Product, ProductVendor, Category
 from products.forms import ProductClassForm, ProductFrontEndForm
 
+from frontend.models import Settings
 from .forms import (InvoiceForm, EmployerForm, VendorBankingAccountForm,
                     PaymentForm, NoteForm, VendorProductForm, ProductVendorClassForm,
                     Invoice, InvoiceForm
@@ -275,8 +276,9 @@ def ajax_search_products_warehouse_view(request, pk):
 @csrf_exempt
 def ajax_modify_order_item_modal(request, pk):
     instance = get_object_or_404(InvoiceItem, id=pk)
-    form = InvoiceItemForm(instance=instance)
+    form = InvoiceItemForm(instance=instance, initial={'income_percent': Settings.objects.first().income_percent or 0})
     data = dict()
+    
     data['result'] = render_to_string(template_name='warehouse/ajax/product_modal.html',
                                       request=request,
                                       context={
@@ -303,7 +305,7 @@ def ajax_create_product_modal(request, pk, dk):
                                     'product': product,
                                     'taxes_modifier': product.taxes_modifier,
                                     'value': product.price_buy,
-
+                                    'income_percent': Settings.objects.first().income_percent if Settings.objects.all().exists() else 0
                                     }
                            )
     data['result'] = render_to_string(request=request,

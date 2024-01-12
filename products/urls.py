@@ -2,7 +2,7 @@ from .autocomplete_view import VendorAutocomplete, CategoryAutocomplete, Product
 from django.urls import path, re_path
 from .views import (ProductHomepageView, ProductListView, ProductEditListView, ProductCreateView, ProductUpdateView,
                     create_product_vendor_view, product_vendor_delete_view, ProductVendorUpdateView, delete_product_view, copy_product_view,
-                    update_product_fpa_view, manipulate_apografi_view,
+                    update_product_fpa_view, manipulate_apografi_view, update_price_list_item_view,
                     PriceListCreateView, PriceListUpdateView, PriceListView, delete_price_list_view, print_price_list_view
 
                     )
@@ -10,7 +10,9 @@ from .views import (ProductHomepageView, ProductListView, ProductEditListView, P
 from .action_views import action_choose_vendor_view
 from .product_vendors import ProductVendorListView
 from .data_views import fix_products_titles_view
-from .ajax_views import ajax_add_product_to_price_list_view, ajax_edit_product_submit_view, ajax_search_products, create_product_from_price_time_view
+from .ajax_views import ajax_add_product_to_price_list_view, ajax_edit_product_submit_view, ajax_search_products, create_product_from_price_time_view, ajax_delete_price_item_view
+
+
 
 urlpatterns = [
     path('apografi/', manipulate_apografi_view),
@@ -35,6 +37,8 @@ urlpatterns = [
     path('price-lists/create/', PriceListCreateView.as_view(), name="price_list_create"),
     path('price-lists/update/<int:pk>/',  PriceListUpdateView.as_view(), name="price_list_update"),
     path('price-lists/delete/<int:pk>/', delete_price_list_view, name="price_list_delete"),
+    path('ajax/delete-price-item-list/<int:pk>/', ajax_delete_price_item_view, name='ajax_delete_price_item'),
+    path('update-price-list-item/<int:pk>/', update_price_list_item_view, name='update_price_list_item'),
 
 
     re_path(r'^vendor-autocomplete/$', VendorAutocomplete.as_view(), name='vendor-autocomplete', ),

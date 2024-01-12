@@ -43,7 +43,7 @@
                                     <tbody>
                                         <tr>
                                             <td>{{ instance.title }}</td>
-
+                                            <h4>ΣΥΝΟΛΙΚΗ ΑΞΙΑ: {{instance.value}} </h4>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -71,19 +71,19 @@
                        <thead>
                            <tr>
                                <th colspan="2">ΠΡΟΪΟΝ</th>
-                               <th>ΤΙΜΗ</th>
-                               <th>ΤΙΜΗ/ΜΟΝ.</th>
-                               <th>ΤΙΜΗ ΕΚΠΤ.</th>
+                               <th>ΤΙΜΗ ΜΟΝΑΔΑΣ</th>
+                               <th>ΠΟΣΟΤΗΤΑ</th>
+                               <th>ΣΥΝΟΛΟ</th>
 
                            </tr>
                        </thead>
                    <tbody>
-                       {% for product  in qs %}
+                       {% for product in qs %}
                            <tr>
-                               <td style="font-weight: bold;font-size: x-large;"  class="lead" colspan="2">{{ product.title }} </td>
+                               <td style="font-weight: bold;font-size: x-large;"  class="lead" colspan="2">{{ product.product }} </td>
                                <td  class="">{{ product.value }} €</td>
-                               <td  class="lead">{{ product.value_per_unit }} €</td>
-                               <td  class="lead">{{ product.value_discount }} €</td>
+                               <td  class="lead">{{ product.qty }} €</td>
+                               <td  class="lead">{{ product.total_value }} €</td>
                            </tr>
                        {% endfor %}
                    </tbody>

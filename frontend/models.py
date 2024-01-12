@@ -14,3 +14,16 @@ class PaymentMethod(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Settings(models.Model):
+    income_percent = models.DecimalField(default=20, decimal_places=2, max_digits=5)
+
+
+    def save(self, *args, **kwargs):
+        if self.__class__.objects.count():
+            self.pk = self.__class__.objects.first().pk
+        super().save(*args, **kwargs)
+
+    def __str__(self) -> str:
+        return 'Settings'

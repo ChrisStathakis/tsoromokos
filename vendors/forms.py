@@ -143,13 +143,14 @@ class InvoiceProductForm(BaseForm, forms.ModelForm):
     vendor = forms.ModelChoiceField(queryset=Vendor.objects.all(), widget=forms.HiddenInput(), required=True)
     qty = forms.DecimalField(label='Ποσότητα', required=True)
     price_buy = forms.DecimalField(label='Αξια', widget=forms.NumberInput(attrs={'step': '0.001'}))
+    income_percent = forms.DecimalField(label='ΠΟΣΟΣΤΟ ΚΕΡΔΟΥΣ', widget=forms.NumberInput(attrs={'step': '0.001'}))
 
     class Meta:
         model = Product
         fields = ['order_code', 'title', 'taxes_modifier',
                   'unit',
                   'vendor', 'price_buy',
-                  'qty', 'value'
+                  'qty', 'safe_qty', 'value', 'income_percent'
                 ]
 
 
@@ -161,5 +162,5 @@ class InvoiceItemForm(BaseForm, forms.ModelForm):
     class Meta:
         model = InvoiceItem
         fields = ['order_code', 'unit', 'qty', 'value', 'discount',
-                  'taxes_modifier', 'vendor', 'invoice', 'product'
+                  'taxes_modifier', 'vendor', 'invoice', 'product', 'income_percent'
                   ]

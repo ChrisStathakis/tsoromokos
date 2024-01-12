@@ -18,6 +18,7 @@ from .forms import (VendorForm, InvoiceVendorDetailForm, EmployerForm, PaymentFo
                     InvoiceItemForm
                     )
 from costumers.models import Costumer
+from frontend.models import Settings
 from .forms import PaycheckForm
 
 
@@ -159,8 +160,9 @@ class InvoiceDetailView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        income_percent = Settings.objects.first().income_percent  if Settings.objects.all().exists() else 0
         products = Product.objects.all()
-        context['product_form'] = InvoiceProductForm(initial={'vendor': self.object.vendor})
+        context['product_form'] = InvoiceProductForm(initial={'vendor': self.object.vendor, 'income_percent': income_percent})
         context['order_items'] = self.object.order_items.all()
 
         q = self.request.GET.get('q', None)
