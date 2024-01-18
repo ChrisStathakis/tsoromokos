@@ -348,20 +348,21 @@ class PriceListItem(models.Model):
 
     unit = models.CharField(default='a', max_length=1, choices=UNITS)
     value = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="ΤΙΜΗ ΜΟΝΑΔΑΣ")
-    discount_percent = models.DecimalField(max_digits=20, decimal_places=4, verbose_name='ΕΚΠΤΩΣΗ ΠΟΣΟΣΤΟ', default=0.00)
-    final_value_unit = models.DecimalField(max_digits=20, decimal_places=4, verbose_name='ΤΕΛΙΚΗ ΤΙΜΗ ΜΟΝΑΔΑΣ', default=0.00)
+    discount_percent = models.DecimalField(max_digits=20, decimal_places=2, verbose_name='ΕΚΠΤΩΣΗ ΠΟΣΟΣΤΟ', default=0.00)
+    final_value_unit = models.DecimalField(max_digits=20, decimal_places=2, verbose_name='ΤΕΛΙΚΗ ΤΙΜΗ ΜΟΝΑΔΑΣ', default=0.00)
 
-    margin = models.DecimalField(max_digits=20, decimal_places=4, verbose_name='ΠΟΣΟΣΤΟ ΚΕΡΔΟΥΣ', default=0.00)
-    final_value_margin = models.DecimalField(max_digits=20, decimal_places=4, verbose_name='ΑΞΙΑ ΠΩΛΗΣΗΣ', default=0.00)
+    margin = models.DecimalField(max_digits=20, decimal_places=2, verbose_name='ΠΟΣΟΣΤΟ ΚΕΡΔΟΥΣ', default=0.00)
+    final_value_margin = models.DecimalField(max_digits=20, decimal_places=2, verbose_name='ΑΞΙΑ ΠΩΛΗΣΗΣ', default=0.00)
 
     qty = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="ΠΟΣΟΤΗΤΑ")
     taxes_value = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="ΠΟΣΟΤΗΤΑ", default=0)
-    total_value = models.DecimalField(max_digits=10, decimal_places=2 ,default=0)
+    total_value = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     taxes_modifier = models.IntegerField(default=24)
 
     def save(self, *args, **kwargs):
-        discount_percent = self.discount_percent if not self.category else self.category.discount
-        self.final_value_unit = self.value * Decimal((100 - discount_percent)/100)
+        self.discount_percent = self.discount_percent if not self.category else self.category.discount
+
+        self.final_value_unit = self.value * Decimal((100 - self.discount_percent)/100)
         self.final_value_margin = self.final_value_unit * Decimal((100 + self.margin)/100)
         self.total_value = self.final_value_margin * self.qty
         self.taxes_value = Decimal(self.total_value) * Decimal(self.taxes_modifier/100)
