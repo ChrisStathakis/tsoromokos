@@ -256,7 +256,11 @@ class PriceListUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["page_title"] = f'{self.object}'
-        context["create_form"] = PriceListItemForm(self.request.POST or None, initial={'price_list': self.object})
+        context["create_form"] = PriceListItemForm(self.request.POST or None,
+                                                   initial={
+                                                       'price_list': self.object,
+                                                        'margin': self.object.margin
+                                                   })
         context['qs'] = self.object.price_items.all()
        
         return context

@@ -35,7 +35,7 @@
                             <div class="col-12">
                                 <hr>
                                 <!-- Button trigger modal -->
-                                <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#exampleModal">
+                                <button type="button" class="btn btn-primary pull-left" data-toggle="modal" data-target="#exampleModal">
                                   <i class="fa fa-edit"></i> Επεξεργασια
                                 </button>
 
@@ -63,7 +63,7 @@
                                     </div>
                                   </div>
                                 </div>
-                                <a href="{% url 'vendors:invoice_delete' invoice.id %}" onclick="return confirm('ΕΙΣΑΙ ΣΙΓΟΥΡΟΣ;')" class="card-link btn btn-success btn-danger pull-left"><i class="fa fa-remove" ></i> Διαγραφη</a>
+                                <a href="{% url 'vendors:invoice_delete' invoice.id %}" onclick="return confirm('ΕΙΣΑΙ ΣΙΓΟΥΡΟΣ;')" class="card-link btn btn-success btn-danger pull-right"><i class="fa fa-remove" ></i> Διαγραφη</a>
                             </div>
                         </div>
                     </div>

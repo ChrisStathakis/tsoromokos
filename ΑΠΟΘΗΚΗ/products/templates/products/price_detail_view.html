@@ -5,7 +5,10 @@
 {% block content %}
     <div class="content">
         <div class="row">
-            <div class="col-6" >
+            <div class="col-8" >
+                <div id="category_products">
+                    {% include "products/ajax_price_list_products.html" %}
+                </div>
                 <div class="card">
                     <div class="card-header">
                         <h4>{{ object }}</h4>
@@ -18,15 +21,13 @@
                         <form method="post" class="form">
                             {% csrf_token %}
                             {{ form }}
-                            <button type="submit" class="btn btn-info"><i class="fa fa-save"> </i> ΑΠΟΘΗΚΕΥΣΗ</button>
+                            <button  type="submit" class="btn btn-info"><i class="fa fa-save"> </i> ΑΠΟΘΗΚΕΥΣΗ</button>
                         </form>
                     </div>
                 </div>
-                <div id="category_products">
-                    {% include "products/ajax_price_list_products.html" %}
-                </div>
+
             </div>
-            <div class="col-6">
+            <div class="col-4">
                 <div class="card">
                     <div class="card-header">
                         <a href="{% url 'price_list_view' %}" class="btn btn-warning">ΕΠΙΣΤΡΟΦΗ</a>
@@ -39,10 +40,10 @@
                             
                             </div>
                             <div class="modal-body">
-                                <form method="post" action="{% url 'create_product_from_price_time_view' object.id %}">
+                                <form class="form" id="add_product_form" method="post" data-href="{% url 'create_product_from_price_time_view' object.id %}">
                                     {% csrf_token %}
                                     {{ create_form }}
-                                    <button type="submit" class="btn btn-success"> Save </button>
+                                    <button id="add_button" data-href="{% url 'ajax_add_product_to_price_list' object.id %}"  class="btn btn-success add_button"> Save </button>
                                 </form> 
                             </div>
                             <div class="modal-footer">
@@ -62,6 +63,23 @@
 
 {% block extra_js %}
     <script>
+
+         $(".add_button").click(function(evt){
+            evt.preventDefault();
+            const data = $('#add_product_form').serialize()
+            const btn = $(this);
+            const url = btn.attr("data-href")
+            console.log('data', data)
+            $.ajax({
+                url: url,
+                dataType: "json",
+                data: data,
+                success: function(data){
+                    $("#category_products").html(data.result)
+                }
+            })
+
+        })
 
         $(".search_button").keyup(function(evt){
             evt.preventDefault();

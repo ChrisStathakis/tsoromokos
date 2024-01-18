@@ -159,10 +159,17 @@ class InvoiceDetailView(UpdateView):
         return self.object.get_edit_url()
 
     def get_context_data(self, **kwargs):
+
         context = super().get_context_data(**kwargs)
         income_percent = Settings.objects.first().income_percent  if Settings.objects.all().exists() else 0
         products = Product.objects.all()
-        context['product_form'] = InvoiceProductForm(initial={'vendor': self.object.vendor, 'income_percent': income_percent})
+        context['product_form'] = InvoiceProductForm(initial={'vendor': self.object.vendor,
+                                                              'income_percent': income_percent,
+                                                              'value': 0,
+                                                              'taxes_modifier': 'c'
+                                                              }
+
+                                                     )
         context['order_items'] = self.object.order_items.all()
 
         q = self.request.GET.get('q', None)

@@ -1,11 +1,13 @@
 from django.contrib import admin
 from mptt.admin import DraggableMPTTAdmin
 from import_export.admin import ImportExportModelAdmin
-from .models import Product, Category, Vendor, ProductVendor
+from .models import Product, Category, Vendor, ProductVendor, CategoryPriceList
 from .forms import VendorForm
 
 from dal_admin_filters import AutocompleteFilter
 
+class CategoryPriceListInline(admin.TabularInline):
+    model = CategoryPriceList
 
 def make_published(modeladmin, request, queryset):
     for ele in queryset:
@@ -23,6 +25,16 @@ class ProductVendorAdmin(ImportExportModelAdmin):
     list_filter = [ 'vendor']
     list_display = ['id', '__str__']
     actions = [make_published, ]
+
+
+@admin.register(CategoryPriceList)
+class CategoryPriceListAdmin(admin.ModelAdmin):
+    fields = ['title', 'category', 'discount']
+    list_display = ['title', 'category', 'discount']
+    list_filter = ['category', 'is_parent']
+    inlines = [CategoryPriceListInline, ]
+    list_editable = ['discount', ]
+    search_fields = ['title', ]
 
 
 

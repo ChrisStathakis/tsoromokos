@@ -185,6 +185,38 @@
                 </div>
 
                 <div class="row">
+                     <div class="col-md-6">
+                    <div class="card">
+                      <div class="card-header">
+                        <h5 class="card-title">ΠΡΟΪΟΝΤΑ</h5>
+
+                      </div>
+                      <div class="card-body">
+                          <table class="table table-bordered">
+                              <thead>
+                                <tr>
+                                    <th>ΠΡΟΪΟΝ</th>
+                                    <th>ΑΣΦΑΛΗ ΠΟΣΟΤΗΤΑ</th>
+                                    <th>ΥΠΟΛΟΙΠΟ</th>
+                                    <th>-</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {% for ele in products %}
+                                    <tr>
+                                        <td>{{ ele }}</td>
+                                        <td>{{ ele.safe_qty }}</td>
+                                        <td>{{ ele.qty }}</td>
+                                        <td><a href="{{ ele.get_edit_url }}" class="btn btn-info"><i class="fa fa-edit"></i></a></td>
+                                    </tr>
+                                {% endfor %}
+                              </tbody>
+                          </table>
+                      </div>
+
+                    </div>
+                  </div>
+
                   <div class="col-md-6">
                     <div class="card ">
                       <div class="card-header ">
@@ -199,6 +231,7 @@
                                     <th>Κωδικος</th>
                                     <th>Προμηθευτης</th>
                                     <th>Αξια</th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -208,6 +241,7 @@
                                         <td><a href="{{ invoice.get_edit_url }}">{{ invoice }}</a> </td>
                                         <td>{{ invoice.vendor }}</td>
                                         <td>{{ invoice.tag_value }}</td>
+
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -252,36 +286,7 @@
                 
                   </div>
 
-                  <div class="col-md-6">
-                    <div class="card">
-                      <div class="card-header">
-                        <h5 class="card-title">ΠΡΟΪΟΝΤΑ</h5>
-                        
-                      </div>
-                      <div class="card-body">
-                          <table class="table table-bordered">
-                              <thead>
-                                <tr>
-                                    <th>ΠΡΟΪΟΝ</th>
-                                    <th>ΑΣΦΑΛΗ ΠΟΣΟΤΗΤΑ</th>
-                                    <th>ΥΠΟΛΟΙΠΟ</th>
-                                    
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {% for ele in products %}
-                                    <tr>
-                                        <td>{{ ele }}</td>
-                                        <td>{{ ele.safe_qty }}</td>
-                                        <td>{{ ele.qty }}</td>
-                                    </tr>
-                                {% endfor %}
-                              </tbody>
-                          </table>
-                      </div>
 
-                    </div>
-                  </div>
                 </div>
           </div>
        {% endblock %}

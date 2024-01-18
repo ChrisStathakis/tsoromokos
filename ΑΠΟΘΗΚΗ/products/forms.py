@@ -50,7 +50,10 @@ class PriceListItemForm(BaseForm, forms.ModelForm):
 
     class Meta:
         model = PriceListItem
-        fields = ['title', 'price_list', 'value', 'qty']
+        fields = ['title', 'category', 'price_list', 'unit',
+                  'value', 'discount_percent', 'qty', 'taxes_modifier', 'margin'
+
+                  ]
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -100,4 +103,7 @@ class PriceListForm(BaseForm, forms.ModelForm):
 
     class Meta:
         model = PriceList
-        fields = ['title', 'active']
+        fields = ['title', 'margin', 'folder', 'install_cost']
+
+
+

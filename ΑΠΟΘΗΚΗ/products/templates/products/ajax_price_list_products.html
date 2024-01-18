@@ -5,15 +5,21 @@
         <h4>ΣΥΝΟΛΙΚΗ ΑΞΙΑ: {{object.value}} </h4>
     </div>
     <div class="card-body">
-        <table class="table">
+        <table class="table table-bordered">
             <thead>
             <tr>
                 <th>-</th>
-                <th>ΠΡΟΪΟΝ</th>
-                <th>ΤΙΜΗ/</th>
-                <th>ΠΟΣΟΤΗΤΑ/</th>
-                <th>ΣΥΝΟΛΟ/</th>
-                <th>ΕΠΕΞΕΡΓΑΣΙΑ</th>
+                <th>ΕΙΔΟΣ</th>
+                <th>Μ.Μ</th>
+                <th>QTY</th>
+                <th>ΑΡΧΙΚΗ ΤΙΜΗ/</th>
+                <th>ΕΚΠΤΩΣΗ</th>
+                <th>ΤΕΛΙΚΗ ΤΙΜΗ</th>
+                <th>ΠΟΣΟΤΟ ΚΕΡΔΟΥΣ</th>
+                <th>ΤΙΜΗ ΠΩΛΗΣΗΣ ΧΩΡΙΣ ΦΠΑ</th>
+                <th>ΣΥΝΟΛΟ</th>
+                <th>ΦΠΑ</th>
+                <th>-</th>
             </tr>
             </thead>
             <tbody>
@@ -24,9 +30,16 @@
                         class="btn btn-danger delete_class"><i class="fa fa-trash"></i></button>
                      </td>
                     <td>{{ ele.title }}</td>
-                    <td>{{ ele.value }}</td>
+                    <td>{{ ele.get_unit_display }}</td>
                     <td>{{ ele.qty }}</td>
-                    <td>{{ele.total_value }}<td>
+                    <td>{{ ele.value }}</td>
+                    <td>{{ele.discount_percent }}</td>
+                    <td>{{ele.final_value_unit }}</td>
+                    <td>{{ele.margin }}</td>
+                    <td>{{ele.final_value_margin }}</td>
+                    <td>{{ele.total_value }}</td>
+                    <td>{{ele.taxes_value }} | {{ele.taxes_modifier }}%</td>
+
                     <td><a href="{% url 'update_price_list_item' ele.id %}" class="btn btn-info"><i class="fa fa-edit"> </i></a> </td>
                 </tr>
             {% endfor %}

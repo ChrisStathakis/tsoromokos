@@ -12,6 +12,7 @@ from django.db.models import Min, Q, Avg, Sum, Window, F
 
 from frontend.my_constants import UNITS
 from frontend.tools import remove_exponent
+from decimal import Decimal
 PRODUCTION = settings.PRODUCTION
 CURRENCY = settings.CURRENCY
 
@@ -272,14 +273,22 @@ class ProductVendor(models.Model):
         return qs
 
 
-
 class PriceList(models.Model):
     active = models.BooleanField(default=False)
     title = models.CharField(max_length=220)
-    value = models.DecimalField(max_digits=10, decimal_places=2, default=0, null=True, blank=True)
+    value = models.DecimalField(max_digits=10, decimal_places=2, default=0, null=True, blank=True, verbose_name='ΚΑΘΑΡΗ')
+    margin = models.DecimalField(max_digits=5, decimal_places=2, default=20, verbose_name='ΠΟΣΟΣΤΟ ΚΕΡΔΟΥΣ')
+    install_cost = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='ΑΜΟΙΒΗ ΕΓΚΑΤΑΣΤΑΣΗΣ', default=0)
+    folder = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='ΑΔΕΙΟΔΟΤΗΣΗ', null=True, default=0)
+    clean_value = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='ΑΞΙΑ ΠΡΟΪΟΝΤΩΝ', null=True, default=0)
+    taxes_value = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='ΦΠΑ', null=True, default=0)
+    total_value = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='ΣΥΝΟΛΟ', null=True, default=0)
 
     def save(self, *args, **kwargs):
         self.value = self.price_items.all().aggregate(Sum('total_value'))['total_value__sum'] or 0
+        self.taxes = self.price_items.all().aggregate(Sum('taxes_value'))['taxes_value__sum'] or 0
+        self.clean_value = self.value + self.taxes
+        self.total_value = self.clean_value + self.install_cost + self.folder
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -306,17 +315,56 @@ class PriceList(models.Model):
             qs = qs.filter(title__icontains=search_name)
         return qs
 
-    
+
+class CategoryPriceList(models.Model):
+    title = models.CharField(unique=True, max_length=220)
+    is_parent = models.BooleanField(default=False)
+    category = models.ForeignKey('self', on_delete=models.PROTECT, blank=True, null=True,related_name='childrens')
+    discount = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+
+    class Meta:
+        ordering = ['category__title', 'title']
+
+
+    def save(self, *args, **kwargs):
+        self.is_parent = True if not self.category else False
+        super().save(*args, **kwargs)
+
+
+    def __str__(self):
+        full_path = [self.title]
+        k = self.category
+        while k is not None:
+            full_path.append(k.title)
+            k = k.category
+        t= ' -> '.join(full_path[::-1])
+        return f'{t}: {self.discount} %'
+
 
 class PriceListItem(models.Model):
     title = models.CharField(max_length=220, null=True)
+    category = models.ForeignKey(CategoryPriceList, on_delete=models.SET_NULL, null=True, blank=True)
     price_list = models.ForeignKey(PriceList, on_delete=models.PROTECT, related_name="price_items")
+
+    unit = models.CharField(default='a', max_length=1, choices=UNITS)
     value = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="ΤΙΜΗ ΜΟΝΑΔΑΣ")
+    discount_percent = models.DecimalField(max_digits=20, decimal_places=4, verbose_name='ΕΚΠΤΩΣΗ ΠΟΣΟΣΤΟ', default=0.00)
+    final_value_unit = models.DecimalField(max_digits=20, decimal_places=4, verbose_name='ΤΕΛΙΚΗ ΤΙΜΗ ΜΟΝΑΔΑΣ', default=0.00)
+
+    margin = models.DecimalField(max_digits=20, decimal_places=4, verbose_name='ΠΟΣΟΣΤΟ ΚΕΡΔΟΥΣ', default=0.00)
+    final_value_margin = models.DecimalField(max_digits=20, decimal_places=4, verbose_name='ΑΞΙΑ ΠΩΛΗΣΗΣ', default=0.00)
+
     qty = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="ΠΟΣΟΤΗΤΑ")
-    total_value = models.DecimalField(max_digits=10, decimal_places=2)
+    taxes_value = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="ΠΟΣΟΤΗΤΑ", default=0)
+    total_value = models.DecimalField(max_digits=10, decimal_places=2 ,default=0)
+    taxes_modifier = models.IntegerField(default=24)
 
     def save(self, *args, **kwargs):
-        self.total_value = self.qty * self.value
+        discount_percent = self.discount_percent if not self.category else self.category.discount
+        self.final_value_unit = self.value * Decimal((100 - discount_percent)/100)
+        self.final_value_margin = self.final_value_unit * Decimal((100 + self.margin)/100)
+        self.total_value = self.final_value_margin * self.qty
+        self.taxes_value = Decimal(self.total_value) * Decimal(self.taxes_modifier/100)
         super().save(*args, **kwargs)
         self.price_list.save()
 

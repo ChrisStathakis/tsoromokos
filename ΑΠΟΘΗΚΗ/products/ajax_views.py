@@ -10,19 +10,20 @@ from django.contrib.admin.views.decorators import staff_member_required
 
 
 from .models import PriceList, Product, PriceListItem
-from .forms import ProductListItemForm
+from .forms import ProductListItemForm, PriceListItemForm
 
 
 @staff_member_required
-def ajax_add_product_to_price_list_view(request, pk, dk, action):
-    product = get_object_or_404(Product, id=dk)
+def ajax_add_product_to_price_list_view(request, pk):
+    print(request.GET)
     price_list = get_object_or_404(PriceList, id=pk)
-    instance = PriceListItem.objects.create(
-        product=product,
-        price_list=price_list,
-        qty=1,
-        value=product.value
-    )
+    form = PriceListItemForm(request.GET, initial={'price_list': price_list})
+    if form.is_valid():
+        form.save()
+    else:
+        print('error')
+        print(request.POST)
+
 
     data = dict()
     qs = PriceListItem.objects.filter(price_list=price_list)

@@ -5,7 +5,7 @@ import datetime
 from dateutil.relativedelta import relativedelta
 
 from .models import Settings
-
+from decimal import Decimal
 
 def remove_exponent(d):
     return (
@@ -31,6 +31,8 @@ def initial_date(request, months=12):
         current_year = f'01/01/{(datetime.date.today()- relativedelta(year=settings.initial_years_filter)).year} - 12/31/{datetime.date.today().year}'
     else: 
         current_year = f'01/01/{(datetime.date.today()- relativedelta(year=2)).year} - 12/31/{datetime.date.today().year}'
+    current_year = f'01/01/{(datetime.date.today() - relativedelta(year=2)).year} - 12/31/{datetime.date.today().year}'
+    print(current_year)
     date_range = request.GET.get('date_range', current_year)
     date_start, date_end = None, None
 

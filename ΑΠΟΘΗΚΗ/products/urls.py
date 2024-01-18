@@ -50,8 +50,8 @@ urlpatterns = [
 
     # actions
     path('action/choose-vendor/', action_choose_vendor_view, name='action_choose_vendor'),
-    path("ajax/manipulate-product-category/<int:pk>/<int:dk>/<str:action>/", ajax_add_product_to_price_list_view,
-         name="ajax_manipulate_product_category"),
+    path("ajax/manipulate-product-category/<int:pk>/", ajax_add_product_to_price_list_view,
+         name="ajax_add_product_to_price_list"),
     path("ajax/edit-product-submit/<int:pk>/<int:dk>/", ajax_edit_product_submit_view, name="edit_product_submit"),
     path("ajax/search-products/<int:pk>/", ajax_search_products, name="products_ajax_search"),
     path("submit/create-products-from-price-list/<int:pk>/", create_product_from_price_time_view,
