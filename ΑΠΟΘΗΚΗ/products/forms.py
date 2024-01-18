@@ -50,8 +50,8 @@ class PriceListItemForm(BaseForm, forms.ModelForm):
 
     class Meta:
         model = PriceListItem
-        fields = ['title', 'category', 'price_list', 'unit',
-                  'value', 'discount_percent', 'qty', 'taxes_modifier', 'margin'
+        fields = ['title', 'category', 'price_list', 'unit', 'qty',
+                  'value', 'discount_percent',  'taxes_modifier', 'margin'
 
                   ]
         
