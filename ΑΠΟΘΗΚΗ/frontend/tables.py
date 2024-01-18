@@ -20,7 +20,7 @@ class CostumerTable(tables.Table):
         , orderable=False, verbose_name='Δημιουργια'
     )
 
-    tag_balance = tables.Column(orderable=False, verbose_name='Υπολοιπο')
+    tag_balance = tables.TemplateColumn("<p style='color:{{record.color_balance}};'>{{record.balance}}</p>")
    
 
     class Meta:

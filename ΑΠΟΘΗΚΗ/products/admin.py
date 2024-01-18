@@ -31,7 +31,7 @@ class ProductVendorAdmin(ImportExportModelAdmin):
 class CategoryPriceListAdmin(admin.ModelAdmin):
     fields = ['title', 'category', 'discount']
     list_display = ['title', 'category', 'discount']
-    list_filter = ['category', 'is_parent']
+    list_filter = ['is_parent', 'category', ]
     inlines = [CategoryPriceListInline, ]
     list_editable = ['discount', ]
     search_fields = ['title', ]

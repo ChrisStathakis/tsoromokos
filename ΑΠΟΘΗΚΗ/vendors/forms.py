@@ -144,6 +144,7 @@ class InvoiceProductForm(BaseForm, forms.ModelForm):
     qty = forms.DecimalField(label='Ποσότητα', required=True)
     price_buy = forms.DecimalField(label='Αξια', widget=forms.NumberInput(attrs={'step': '0.001'}))
     income_percent = forms.DecimalField(label='ΠΟΣΟΣΤΟ ΚΕΡΔΟΥΣ', widget=forms.NumberInput(attrs={'step': '0.001'}))
+    category_create = forms.CharField(required=False, label='ΠΡΟΣΘΗΚΗ ΚΑΤΗΓΟΡΙΑΣ')
 
     class Meta:
         model = Product
@@ -151,7 +152,7 @@ class InvoiceProductForm(BaseForm, forms.ModelForm):
                   'unit',
                   'vendor', 'price_buy',
                   'qty', 'safe_qty', 'value', 'income_percent',
-                  'categories',
+                  'categories', 'category_create'
                 ]
 
 

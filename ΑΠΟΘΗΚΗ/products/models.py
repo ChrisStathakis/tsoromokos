@@ -18,12 +18,12 @@ CURRENCY = settings.CURRENCY
 
 
 
-
-
 class Category(models.Model):
     name = models.CharField(max_length=240, unique=True)
 
-    
+    class Meta:
+        ordering = ['name', ]
+
     def __str__(self):
         return self.name
 

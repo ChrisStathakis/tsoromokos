@@ -79,10 +79,11 @@ class ProductListItemForm(BaseForm, forms.ModelForm):
 
 class ProductVendorFrontEndform(BaseForm, forms.ModelForm):
     product = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.HiddenInput())
+    category_create = forms.CharField(required=False, label='ΠΡΟΣΘΗΚΗ ΚΑΤΗΓΟΡΙΑΣ')
 
     class Meta:
         model = ProductVendor
-        fields = ['is_favorite', 'product', 'vendor', 'sku', 'value', 'discount', 'added_value', 'taxes_modifier']
+        fields = ['is_favorite', 'product', 'vendor', 'sku', 'value', 'discount', 'added_value', 'taxes_modifier', ]
         widgets = {
             'vendor': autocomplete.ModelSelect2(url='vendor-autocomplete')
         }

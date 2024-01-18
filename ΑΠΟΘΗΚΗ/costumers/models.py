@@ -87,13 +87,20 @@ class Costumer(models.Model):
     def save(self, *args, **kwargs):
         self.first_name = self.first_name.capitalize()
         self.last_name = self.last_name.capitalize()
+        add_value = self.payment_invoices.aggregate(Sum('final_value'))['final_value__sum'] or 0
         if not self.eponimia:
             self.eponimia = f'{self.first_name} {self.last_name}'
+        self.value = add_value
         self.balance = self.value - self.paid_value
         super(Costumer, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.eponimia
+
+    def color_balance(self):
+        if self.balance > 0:
+            return 'red'
+        return 'black'
 
     def update_orders(self):
         qs = self.orders.all()

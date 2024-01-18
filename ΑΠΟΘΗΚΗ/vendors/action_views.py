@@ -4,7 +4,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from importlib_metadata import requires
 
-from products.models import ProductVendor, Product
+from products.models import ProductVendor, Product, Category
 from products.forms import ProductClassForm
 from .models import Vendor, Invoice, Payment, Employer, PaymentMethod, VendorBankingAccount, Note, InvoiceItem
 from .forms import (InvoiceVendorDetailForm, EmployerForm, PaymentForm, InvoiceForm, VendorBankingAccountForm, NoteForm,
@@ -351,6 +351,12 @@ def create_product_from_invoice(request, pk):
                     taxes_modifier=product.taxes_modifier,
                     income_percent=form.cleaned_data.get('income_percent', 20)
                 )
+        category = request.POST.get('category_create', None)
+        if category:
+            new_ca = Category.objects.create(name=category)
+            product.categories.add(new_ca)
+            product.save()
+
         new_item.calculate_product_sell_price()
         
         return redirect(instance.get_edit_url())
