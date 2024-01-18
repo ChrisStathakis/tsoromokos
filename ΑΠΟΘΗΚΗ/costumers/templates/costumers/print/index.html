@@ -1,0 +1,207 @@
+<!DOCTYPE html> {% load static %}
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{{ instance.costumer }} | {{ instance.get_series_display }} | {{ instance.number }}</title>
+        <link href="{% static 'costumers/bootstrap.css' %}" rel="stylesheet" id="bootstrap-css">
+        <script src="{% static 'costumers/bootstrap.min.js' %}"></script>
+        <script src="{% static 'costumers/jquery.min.js' %}"></script>
+<!------ Include the above in your HEAD tag ---------->
+        <style>
+            body{
+              -webkit-print-color-adjust:exact !important;
+              print-color-adjust:exact !important;
+            }
+            
+            .bottom {
+                position: absolute;
+                bottom: 10px;
+            }
+            table {
+                border: 2px ;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container" style="height: 29.7cm">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card" style="border: none">
+                        <div class=" p-0">
+                            <div class="row pb-5 p-5">
+                            <div class="col-6">
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                               <span> ΤΟΠΟΣ ΕΚΔΟΣΗΣ </span><br />
+                                                {{ instance.tag_place|default_if_none:"" }}
+                                            </td>
+                                            <td>
+                                                ΗΜΕΡΟΜΗΝΙΑ <br />
+                                                {{ instance.date|date:"d/m/Y"}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                           <tr>
+                                                <td colspan="2" style="font-weight: bold;text-align: center;">
+                                                    ΔΕΛΤΙΟ ΑΠΟΣΤΟΛΗΣ <br />
+                                                </td>
+                                            </tr>
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                ΩΡΑ ΠΑΡΑΔΟΣΗΣ <br />
+                                                {{ instance.tag_delivery_time|default_if_none:"" }}
+                                            </td>
+                                            <td>
+                                                ΑΡΙΘ. ΜΕΤΑΦΟΡΙΚΟΥ ΜΕΣΟΥ(*) <br />
+                                                {{ costumer.tag_transport|default_if_none:"" }}
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-6">
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <td style="background-color: #adb3b9 !important">ΣΕΙΡΑ: {{ instance.get_series_display|default_if_none:"" }}</td>
+                                            <td style="background-color: #adb3b9 !important">Νο: {{ instance.number|default_if_none:"" }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p style="text-align: center;">
+                                    ΤΣΟΡΟΜΩΚΟΣ Β. ΗΛΙΑΣ <br />
+                                    ΜΗΧΑΝΟΛΟΓΟΣ & ΑΕΡΟΝΑΥΠΗΓΟΣ ΜΗΧΑΝΙΚΟΣ<br />
+                                    ΔΙΠΛ. ΠΟΛ. ΣΧΟΛΗΣ ΠΑΝΕΠΗΣΤΗΜΙΟΥ ΠΑΤΡΩΝ<br />
+                                    ΜΕΛΟΣ ΤΕΕ ΑΡ. ΜΗΤΡΩΟΥ 129063<br />
+                                    ΜΟΛΑΟΙ ΛΑΚΩΝΙΑΣ - ΤΚ 23052<br />
+                                    ΑΦΜ: 129202597<br />
+                                    ΚΙΝ: 69785552651
+                                </p>
+                            </div>
+                            <div class="col-6"></div>
+                                <div class="col-md-12">
+                                    <table class="table table-bordered table-sm">
+                                        <tbody>
+                                            <tr>
+                                                <td colspan="2" style="background-color: #adb3b9 !important"><span style="font-weight: bold">ΕΠΩΝΥΜΙΑ: </span> : {{ costumer.eponimia|default_if_none:"" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><span style="font-weight: bold">ΔΙΕΥΘΥΝΣΗ: </span> {{ costumer.address|default_if_none:"" }}</td>
+                                                <td><span style="font-weight: bold">ΠΟΛΗ: </span> {{ costumer.city|default_if_none:"" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><span style="font-weight: bold">ΕΠΑΓΓΕΛΜΑ: </span> {{ costumer.job_description|default_if_none:"" }}</td>
+                                                <td><span style="font-weight: bold">ΑΦΜ: </span> {{ costumer.afm|default_if_none:"" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><span style="font-weight: bold">ΤΟΠΟΣ ΦΟΡΤΩΣΗΣ: </span> {{ customer.loading_place|default_if_none:"" }} </td>
+                                                <td><span style="font-weight: bold">ΔΟΥ(*): </span> {{ costumer.doy|default_if_none:"" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><span style="font-weight: bold">ΠΡΟΟΡΙΣΜΟΣ: </span> {{ costumer.destination_city }}</td>
+                                                <td><span style="font-weight: bold">ΣΚΟΠΟΣ ΑΛΛΗΣ ΔΙΑΚΙΝΗΣΗΣ: </span>  {{ costumer.purpose_of_another_movement|default_if_none:"" }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+                                <div class="col-12">
+                                    <table style="width: 100%;margin-top:3%" class="table table-bordered">
+                                        <thead>
+                                            <tr style="background-color: #adb3b9 !important">
+                                                <th style="width: 10%;background-color: #adb3b9 !important" colspan="1">ΠΟΣΟΤΗΤΑ</th>
+                                                <th style="width: 10%;background-color: #adb3b9 !important" colspan="1" class="">ΜΜ</th>
+                                                <th style="width: 80%;background-color: #adb3b9 !important" colspan="6" class="">ΠΕΡΙΓΡΑΦΗ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for ele in instance.order_items.all %}
+                                                <tr>
+                                                    <td style="width: 10%" colspan="1">{{ ele.qty }}</td>
+                                                    <td style="width: 10%" colspan="1">{{ ele.get_unit_display }}</td>
+                                                    <td style="width: 80%" colspan="6">{{ ele.title }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="row my_p">
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row bottom">
+                <div class="col-2">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="background-color: #adb3b9 !important">
+                                    ΠΟΣΟΤΗΤΑ ΑΡΙΘΜΗΤΙΚΩΣ<br />
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ instance.total_qty }}</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+               
+                <div class="col-10" >
+                    
+                    <p style="border:1px solid;color:#dee2e6;height:100%;margin-bottom:-2%">
+                       <span style="color:black;"> &nbsp &nbsp &nbspΠΟΣΟΤΗΤΑ ΟΛΟΓΡΑΦΩΣ: &nbsp &nbsp  {{ instance.writing_qty }} <span>
+                    </p>
+                </div>
+                <div class="col-8">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="background-color: #adb3b9 !important">ΕΚΔΟΣΗ</th>
+                                <th style="background-color: #adb3b9 !important">ΠΑΡΑΔΟΣΗ</th>
+                                <th style="background-color: #adb3b9 !important">ΠΑΡΑΛΑΒΗ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                    <br>
+                    <br>
+                    <hr />
+                </div>
+                <div class="col-4">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="background-color: #adb3b9 !important">ΑΡΙΘΜΟΣ ΣΧΕΤΙΚΟΥ ΠΑΡΑΣΤΑΤΙΚΟΥ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ instance.number_of_invoice|default_if_none:"-" }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+
+        </div>
+  </body>
+</html>

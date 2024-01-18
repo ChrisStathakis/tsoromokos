@@ -1,0 +1,56 @@
+<div class="card">
+    <div id="modal_area"></div>
+    <div class="card-header">
+        <h4>ΠΡΟΪΟΝΤΑ</h4>
+        <h4>ΣΥΝΟΛΙΚΗ ΑΞΙΑ: {{object.value}} </h4>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>-</th>
+                <th>ΠΡΟΪΟΝ</th>
+                <th>ΤΙΜΗ/</th>
+                <th>ΠΟΣΟΤΗΤΑ/</th>
+                <th>ΣΥΝΟΛΟ/</th>
+                <th>ΕΠΕΞΕΡΓΑΣΙΑ</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for ele in qs %}
+                <tr>
+                    <td>
+                        <button data-href="{% url 'ajax_delete_price_item' ele.id  %}" 
+                        class="btn btn-danger delete_class"><i class="fa fa-trash"></i></button>
+                     </td>
+                    <td>{{ ele.title }}</td>
+                    <td>{{ ele.value }}</td>
+                    <td>{{ ele.qty }}</td>
+                    <td>{{ele.total_value }}<td>
+                    <td><a href="{% url 'update_price_list_item' ele.id %}" class="btn btn-info"><i class="fa fa-edit"> </i></a> </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+<script>
+     $(".delete_class").click(function(evt){
+            evt.preventDefault();
+            const btn = $(this);
+            const url = btn.attr("data-href")
+            $.ajax({
+                url: url,
+                dataType: "json",
+                success: function(data){
+                    $("#category_products").html(data.result)
+                }
+            })
+
+        })
+
+   
+</script>
